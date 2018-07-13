@@ -24,7 +24,10 @@ module Footrest
         faraday.use                         Footrest::RaiseFootrestErrors
         faraday.use                         Footrest::Pagination
         faraday.headers[:accept]          = "application/json"
-        faraday.headers[:authorization]   = "Bearer #{config[:token]}" if config[:token]
+        if config[:token]
+          faraday.headers[:authorization] = "Bearer #{config[:token]}"
+          faraday.headers['x-api-key']    = config[:token]
+        end
         faraday.headers[:user_agent]      = "Footrest"
         faraday.adapter                     Faraday.default_adapter
       end
