@@ -11,7 +11,7 @@ module Footrest
 
     # Store a Proc that receives the body and returns the parsed result.
     def self.define_parser(parser = nil)
-      @parser = parser || Proc.new
+      @parser = parser || Proc.new { |body| body }
     end
 
     def self.inherited(subclass)
