@@ -1,16 +1,15 @@
 require 'footrest/connection'
 require 'footrest/request'
-require 'active_support/configurable'
 
 module Footrest
   class Client
     include Footrest::Connection
     include Footrest::Request
-    include ActiveSupport::Configurable
 
-    config_accessor :token
-    config_accessor :prefix
-    config_accessor :logging
+    class_attribute :config, default: ActiveSupport::OrderedOptions.new, instance_accessor: false
+    class << self
+      delegate :token, :token=, :prefix, :prefix=, :logging, :logging=, to: :config
+    end
 
     def initialize(options={}, &block)
       self.config.merge!(options)
