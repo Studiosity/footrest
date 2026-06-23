@@ -1,7 +1,8 @@
+require 'faraday'
 require 'link_header'
 
 module Footrest
-  class Pagination < Faraday::Response::Middleware
+  class Pagination < Faraday::Middleware
     Links = Struct.new(:first, :prev, :current, :next, :last) do
       alias_method :previous, :prev
       alias_method :prevous=, :prev=
