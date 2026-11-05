@@ -10,8 +10,8 @@ module Footrest
     end
 
     # Store a Proc that receives the body and returns the parsed result.
-    def self.define_parser(parser = nil)
-      @parser = parser || Proc.new
+    def self.define_parser(parser = nil, &block)
+      @parser = parser || block
     end
 
     def self.inherited(subclass)
@@ -47,7 +47,7 @@ module Footrest
           self.class.parser.call(body)
         rescue StandardError, SyntaxError => err
           raise err if err.is_a? SyntaxError and err.class.name != 'Psych::SyntaxError'
-          raise Faraday::Error::ParsingError, err
+          raise Faraday::ParsingError, err
         end
       else
         body
