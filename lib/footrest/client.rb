@@ -7,11 +7,16 @@ module Footrest
     include Footrest::Connection
     include Footrest::Request
 
+    def self.config
+      @config ||= ActiveSupport::OrderedOptions.new
+    end
+
     # Well-known options surfaced as reader/writer methods (e.g. client.token).
     # Any other option remains reachable through #config (e.g. config[:domain]).
     CONFIG_ACCESSORS = %i[token prefix logging].freeze
 
     def initialize(options={}, &block)
+      @config = self.class.config.dup
       config.merge!(options)
       yield self if block_given?
       set_connection(config)
@@ -27,6 +32,11 @@ module Footrest
     end
 
     CONFIG_ACCESSORS.each do |name|
+      # class methods
+      define_singleton_method(name) { config[name] }
+      define_singleton_method("#{name}=") { |value| config[name] = value }
+
+      # instance methods
       define_method(name) { config[name] }
       define_method("#{name}=") { |value| config[name] = value }
     end
